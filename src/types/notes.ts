@@ -1,4 +1,4 @@
-export interface Note {
+interface Note {
   id: string;
   title: string;
   content: string;
@@ -6,3 +6,11 @@ export interface Note {
   updatedAt: string;
   tag: string;
 }
+
+interface CreateNote {
+  title: string;
+  content: string;
+  tag: string;
+}
+
+export type { Note, CreateNote };

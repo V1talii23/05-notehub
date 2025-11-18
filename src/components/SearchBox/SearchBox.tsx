@@ -1,25 +1,19 @@
 import css from './SearchBox..module.css';
-import { useState, useEffect } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
+// import { useState, useEffect } from 'react';
+// import { useDebouncedCallback } from 'use-debounce';
 
-function SearchBox() {
-  const [searchNote, setSearchNote] = useState('');
+interface SearchBoxProps {
+  onChange: (note: React.ChangeEvent<HTMLInputElement>) => void;
+  defaultValue: string;
+}
 
-  const handleNotesInput = useDebouncedCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => setSearchNote(e.target.value),
-    2000
-  );
-
-  useEffect(() => {
-    console.log(`New note search ${searchNote}`);
-  }, [searchNote]);
-
+function SearchBox({ onChange, defaultValue }: SearchBoxProps) {
   return (
     <input
-      onChange={handleNotesInput}
+      onChange={onChange}
       className={css.input}
       type="text"
-      defaultValue={searchNote}
+      defaultValue={defaultValue}
       placeholder="Search notes"
     />
   );

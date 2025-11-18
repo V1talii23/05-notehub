@@ -1,7 +1,7 @@
 const NOTES_KEY = import.meta.env.VITE_NOTEHUB_TOKEN;
 
 import axios from 'axios';
-import type { Note } from '../types/notes';
+import type { Note, CreateNote } from '../types/notes';
 // import { useQuery, keepPreviousData } from '@tanstack/react-query';
 
 interface HttpsResponse {
@@ -9,28 +9,21 @@ interface HttpsResponse {
   totalPages: number;
 }
 
-const notesInstance = axios.create({
-  baseURL: 'https://notehub-public.goit.study/api',
-  headers: {
-    Authorization: `Bearer ${NOTES_KEY}`,
-  },
-  //   params: {
-  //     page: '',
-  //     perPage: '',
-  //   },
-});
+axios.defaults.baseURL = 'https://notehub-public.goit.study/api';
+axios.defaults.headers.common['Authorization'] = `Bearer ${NOTES_KEY}`;
 
-async function fetchNotes() {
-  //   const notesQuery = useQuery({
-  //     queryKey: ['notes'],
-  //     queryFn: fetchNotes,
-  //     placeholderData: keepPreviousData,
-  //   });
-
-  const res = await notesInstance.get<HttpsResponse>('/notes', {});
+const getNotes = async (search: string, page: number) => {
+  const res = await axios.get<HttpsResponse>('/notes', {
+    params: { page, perPage: 8, search },
+  });
   console.log(res.data);
 
   return res.data;
-}
+};
 
-export { fetchNotes };
+const createNote = async (data: CreateNote) => {
+  const res = await axios.put<Note>('/notes', data);
+  return res.data;
+};
+
+export { getNotes, createNote };

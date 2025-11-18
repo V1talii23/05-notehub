@@ -1,34 +1,63 @@
 import css from './App.module.css';
-import type { Note } from '../../types/notes';
-import { fetchNotes } from '../../services/noteServices';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { getNotes } from '../../services/noteServices';
+
 import SearchBox from '../SearchBox/SearchBox';
 import Pagination from '../Pagination/Pagination';
 import NoteList from '../NoteList/NoteList';
+import Loader from '../Loader/Loader';
+import Error from '../Error/Error';
+import Modal from '../Modal/Modal';
+
+const KEY = 'notes';
 
 function App() {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [pages, setPages] = useState(1);
+  const [page, setPage] = useState(1);
+  const [searchNote, setSearchNote] = useState('');
+  const [toggle, seTtoggle] = useState(false);
 
-  useEffect(() => {
-    const getAllNotes = async () => {
-      const { notes, totalPages } = await fetchNotes();
-      setNotes(notes);
-      setPages(totalPages);
-    };
-    getAllNotes();
-  }, []);
+  const openModal = () => seTtoggle(true);
+  const closeModal = () => seTtoggle(false);
+
+  const handlePage = ({ selected }: { selected: number }) =>
+    setPage(selected + 1);
+
+  const handleSearch = useDebouncedCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchNote(e.target.value.trim());
+      setPage(1);
+    },
+    1000
+  );
+
+  const { data, isSuccess, isError, isLoading } = useQuery({
+    queryKey: [KEY, searchNote, page],
+    queryFn: () => getNotes(searchNote, page),
+    staleTime: 60 * 1000,
+    placeholderData: keepPreviousData,
+  });
 
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        {<SearchBox />}
-        {pages > 1 && <Pagination pageCount={pages} />}
-        <button onClick={fetchNotes} className={css.button}>
+        {<SearchBox onChange={handleSearch} defaultValue={searchNote} />}
+        {isSuccess && data.totalPages > 1 && (
+          <Pagination
+            pageCount={data.totalPages}
+            onPageChange={handlePage}
+            forcePage={page}
+          />
+        )}
+        <button onClick={openModal} className={css.button}>
           Create note +
         </button>
       </header>
-      {notes.length !== 0 && <NoteList notes={notes} />}
+      {isLoading && <Loader />}
+      {isError && <Error />}
+      {isSuccess && <NoteList notes={data.notes} />}
+      <Modal toggle={toggle} closeModal={closeModal} />
     </div>
   );
 }
