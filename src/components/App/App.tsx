@@ -10,8 +10,9 @@ import NoteList from '../NoteList/NoteList';
 import Loader from '../Loader/Loader';
 import Error from '../Error/Error';
 import Modal from '../Modal/Modal';
+import NoteForm from '../NoteForm/NoteForm';
 
-const KEY = 'notes';
+export const KEY = 'notes';
 
 function App() {
   const [page, setPage] = useState(1);
@@ -57,7 +58,9 @@ function App() {
       {isLoading && <Loader />}
       {isError && <Error />}
       {isSuccess && <NoteList notes={data.notes} />}
-      <Modal toggle={toggle} closeModal={closeModal} />
+      <Modal toggle={toggle}>
+        <NoteForm closeModal={closeModal} />
+      </Modal>
     </div>
   );
 }

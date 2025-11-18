@@ -7,10 +7,10 @@ interface Note {
   tag: string;
 }
 
-interface CreateNote {
+interface CreateNoteData {
   title: string;
   content: string;
   tag: string;
 }
 
-export type { Note, CreateNote };
+export type { Note, CreateNoteData };
