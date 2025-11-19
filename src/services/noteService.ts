@@ -2,8 +2,7 @@ const NOTES_KEY = import.meta.env.VITE_NOTEHUB_TOKEN;
 const URL = '/notes';
 
 import axios from 'axios';
-import type { Note, CreateNoteData } from '../types/notes';
-// import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import type { Note, CreateNoteData } from '../types/note';
 
 interface HttpsResponse {
   notes: Note[];

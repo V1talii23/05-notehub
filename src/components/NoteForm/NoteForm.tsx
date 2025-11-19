@@ -3,10 +3,10 @@ import { useId } from 'react';
 import { Formik, Form, Field, ErrorMessage, type FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useMutation } from '@tanstack/react-query';
-import { createNote } from '../../services/noteServices';
+import { createNote } from '../../services/noteService';
 import { useQueryClient } from '@tanstack/react-query';
 import { KEY } from '../App/App';
-import type { CreateNoteData } from '../../types/notes';
+import type { CreateNoteData } from '../../types/note';
 
 interface NoteFormProps {
   closeModal: () => void;
