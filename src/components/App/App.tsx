@@ -17,13 +17,10 @@ export const KEY = 'notes';
 function App() {
   const [page, setPage] = useState(1);
   const [searchNote, setSearchNote] = useState('');
-  const [toggle, seTtoggle] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => seTtoggle(true);
-  const closeModal = () => seTtoggle(false);
-
-  const handlePage = ({ selected }: { selected: number }) =>
-    setPage(selected + 1);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   const handleSearch = useDebouncedCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +44,7 @@ function App() {
         {isSuccess && data.totalPages > 1 && (
           <Pagination
             pageCount={data.totalPages}
-            onPageChange={handlePage}
+            onPageChange={({ selected }) => setPage(selected + 1)}
             forcePage={page}
           />
         )}
@@ -58,9 +55,11 @@ function App() {
       {isLoading && <Loader />}
       {isError && <Error />}
       {isSuccess && <NoteList notes={data.notes} />}
-      <Modal toggle={toggle}>
-        <NoteForm closeModal={closeModal} />
-      </Modal>
+      {isModalOpen && (
+        <Modal onClose={closeModal}>
+          <NoteForm closeModal={closeModal} />
+        </Modal>
+      )}
     </div>
   );
 }

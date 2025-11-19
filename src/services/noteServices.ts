@@ -15,10 +15,8 @@ axios.defaults.headers.common['Authorization'] = `Bearer ${NOTES_KEY}`;
 
 const getNotes = async (search: string, page: number) => {
   const res = await axios.get<HttpsResponse>(URL, {
-    params: { page, perPage: 8, search },
+    params: { page, perPage: 12, search },
   });
-  console.log(res.data);
-
   return res.data;
 };
 
@@ -27,4 +25,9 @@ const createNote = async (data: CreateNoteData) => {
   return res.data;
 };
 
-export { getNotes, createNote };
+const deleteNote = async (id: Note['id']) => {
+  await axios.delete<Note>(`${URL}/${id}`);
+  return console.log('deleted');
+};
+
+export { getNotes, createNote, deleteNote };

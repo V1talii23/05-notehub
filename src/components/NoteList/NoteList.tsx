@@ -1,22 +1,36 @@
 import css from './NoteList.module.css';
 import type { Note } from '../../types/notes';
+import { useMutation } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
+import { KEY } from '../App/App';
+import { deleteNote } from '../../services/noteServices';
 
 interface NoteListProps {
   notes: Note[];
 }
 
-const id = 'note';
-
 function NoteList({ notes }: NoteListProps) {
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationFn: (id: Note['id']) => deleteNote(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [KEY] }),
+  });
+
   return (
     <ul className={css.list}>
       {notes.map((note) => (
-        <li key={note.id} id={id} className={css.listItem}>
+        <li key={note.id} className={css.listItem}>
           <h2 className={css.title}>{note.title}</h2>
           <p className={css.content}>{note.content}</p>
           <div className={css.footer}>
             <span className={css.tag}>{note.tag}</span>
-            <button className={css.button}>Delete</button>
+            <button
+              disabled={isPending}
+              onClick={() => mutate(note.id)}
+              className={css.button}
+            >
+              Delete
+            </button>
           </div>
         </li>
       ))}
@@ -26,16 +40,3 @@ function NoteList({ notes }: NoteListProps) {
 }
 
 export default NoteList;
-
-// const el = document.getElementById('note');
-
-// const height = el?.clientHeight
-// const weight = el?.clientWidth
-
-// el?.addEventListener('mousemove', handleMove)
-
-// function handleMove(e) {
-//   const xVal = e.layerX;
-//   const yVal = e.layerY;
-// const yRotation
-// }

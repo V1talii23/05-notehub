@@ -4,9 +4,9 @@ import { Formik, Form, Field, ErrorMessage, type FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useMutation } from '@tanstack/react-query';
 import { createNote } from '../../services/noteServices';
-import type { CreateNoteData } from '../../types/notes';
 import { useQueryClient } from '@tanstack/react-query';
 import { KEY } from '../App/App';
+import type { CreateNoteData } from '../../types/notes';
 
 interface NoteFormProps {
   closeModal: () => void;
@@ -41,23 +41,31 @@ function NoteForm({ closeModal }: NoteFormProps) {
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: CreateNoteData) => createNote(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [KEY] });
-      closeModal();
-    },
   });
 
   const handleSubmit = (
     values: FormValues,
     actions: FormikHelpers<FormValues>
   ) => {
-    mutate({
-      title: values.title,
-      content: values.content,
-      tag: values.tag,
-    });
+    mutate(
+      {
+        title: values.title,
+        content: values.content,
+        tag: values.tag,
+      },
+      {
+        onSuccess: (data) => {
+          console.log('Note:', data);
 
-    console.log('Submit:', values);
+          queryClient.invalidateQueries({ queryKey: [KEY] });
+          closeModal();
+        },
+        onError: (error) => {
+          console.log(error.message);
+        },
+      }
+    );
+
     actions.resetForm();
   };
 
