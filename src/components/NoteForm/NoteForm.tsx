@@ -22,13 +22,10 @@ const initialValues: FormValues = { title: '', content: '', tag: 'Todo' };
 
 const NoteSchema = Yup.object().shape({
   title: Yup.string()
-    .min(2, 'Title must be at least 2 characters')
-    .max(30, 'Title is too long')
+    .min(3, 'Title must be at least 2 characters')
+    .max(50, 'Title is too long')
     .required('Title is required'),
-  content: Yup.string()
-    .min(2, 'Content must be at least 2 characters')
-    .max(200, 'Content is too long')
-    .required('Content is required'),
+  content: Yup.string().max(500, 'Content is too long'),
   tag: Yup.string()
     .oneOf(['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'])
     .required('Choose tag of the note'),
@@ -55,8 +52,7 @@ function NoteForm({ closeModal }: NoteFormProps) {
       },
       {
         onSuccess: (data) => {
-          console.log('Note:', data);
-
+          console.log('Created note:', data);
           queryClient.invalidateQueries({ queryKey: [KEY] });
           closeModal();
         },
@@ -120,7 +116,11 @@ function NoteForm({ closeModal }: NoteFormProps) {
             Cancel
           </button>
 
-          <button type="submit" className={css.submitButton} disabled={false}>
+          <button
+            type="submit"
+            className={css.submitButton}
+            disabled={isPending && true}
+          >
             {isPending ? 'Creating' : 'Create note'}
           </button>
         </div>

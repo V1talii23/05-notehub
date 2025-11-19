@@ -13,7 +13,10 @@ function NoteList({ notes }: NoteListProps) {
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: (id: Note['id']) => deleteNote(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [KEY] }),
+    onSuccess: (id) => {
+      console.log('Deleted note:', id);
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
   });
 
   return (
@@ -34,7 +37,6 @@ function NoteList({ notes }: NoteListProps) {
           </div>
         </li>
       ))}
-      <li></li>
     </ul>
   );
 }

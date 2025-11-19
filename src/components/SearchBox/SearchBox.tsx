@@ -1,4 +1,4 @@
-import css from './SearchBox..module.css';
+import css from './SearchBox.module.css';
 // import { useState, useEffect } from 'react';
 // import { useDebouncedCallback } from 'use-debounce';
 

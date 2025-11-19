@@ -25,8 +25,8 @@ const createNote = async (data: CreateNoteData) => {
 };
 
 const deleteNote = async (id: Note['id']) => {
-  await axios.delete<Note>(`${URL}/${id}`);
-  return console.log('deleted');
+  const res = await axios.delete<Note>(`${URL}/${id}`);
+  return res.data;
 };
 
 export { getNotes, createNote, deleteNote };

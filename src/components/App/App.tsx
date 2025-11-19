@@ -43,9 +43,9 @@ function App() {
         {<SearchBox onChange={handleSearch} defaultValue={searchNote} />}
         {isSuccess && data.totalPages > 1 && (
           <Pagination
-            pageCount={data.totalPages}
-            onPageChange={({ selected }) => setPage(selected + 1)}
-            forcePage={page}
+            pages={data.totalPages}
+            handleChangePage={(page) => setPage(page)}
+            currentPage={page}
           />
         )}
         <button onClick={openModal} className={css.button}>
