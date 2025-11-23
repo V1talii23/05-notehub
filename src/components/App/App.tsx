@@ -22,13 +22,10 @@ function App() {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const handleSearch = useDebouncedCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchNote(e.target.value.trim());
-      setPage(1);
-    },
-    1000
-  );
+  const handleSearch = useDebouncedCallback((note: string) => {
+    setSearchNote(note);
+    setPage(1);
+  }, 1000);
 
   const { data, isSuccess, isError, isLoading } = useQuery({
     queryKey: [KEY, searchNote, page],
@@ -40,7 +37,7 @@ function App() {
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        {<SearchBox onChange={handleSearch} defaultValue={searchNote} />}
+        {<SearchBox onChange={handleSearch} value={searchNote} />}
         {isSuccess && data.totalPages > 1 && (
           <Pagination
             pages={data.totalPages}

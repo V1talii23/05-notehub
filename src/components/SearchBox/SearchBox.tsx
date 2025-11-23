@@ -1,19 +1,17 @@
 import css from './SearchBox.module.css';
-// import { useState, useEffect } from 'react';
-// import { useDebouncedCallback } from 'use-debounce';
 
 interface SearchBoxProps {
-  onChange: (note: React.ChangeEvent<HTMLInputElement>) => void;
-  defaultValue: string;
+  onChange: (note: string) => void;
+  value?: string;
 }
 
-function SearchBox({ onChange, defaultValue }: SearchBoxProps) {
+function SearchBox({ onChange, value }: SearchBoxProps) {
   return (
     <input
-      onChange={onChange}
+      onChange={(e) => onChange(e.target.value.trim())}
       className={css.input}
       type="text"
-      defaultValue={defaultValue}
+      defaultValue={value}
       placeholder="Search notes"
     />
   );
